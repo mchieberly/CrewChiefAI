@@ -10,11 +10,13 @@ The simulated race has been simplified to help generalize the model. Complexity 
 Number of laps: 400
 Full tank of fuel lasts: 100 laps (18 gallons)
 Set of four tires lasts: 100 laps
+
 Lap time equation: y = 0.95x + 22.5
   -> y = The lap time in seconds
   -> x = The number of laps since new tires
 
 Note: If the most recent pit stop was 2 tires, x is calculated with the following:
+
 x = (0.5 * a) + (0.5 * b)
   -> a = The number of laps since replacing the older tires
   -> b = The number of laps since replacing the newer tires
