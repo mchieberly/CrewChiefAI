@@ -1,7 +1,7 @@
 # CrewChiefAI
 #### By Malachi Eberly
 
-Reinforcement Learning project to create an agent that can make pit stop decisions during a NASCAR race based on current conditions.
+Reinforcement Learning project to create an agent that can make pit stop decisions during a NASCAR race based on current conditions. This model uses a DDQN to make its predictions
 
 ## Race Simulation Details
 The simulated race has been simplified to help generalize the model. Complexity will be added later to make the model less generalzed and to consider more variables.
