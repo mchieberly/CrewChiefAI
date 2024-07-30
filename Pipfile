@@ -4,6 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+matplotlib = "*"
+torch = "*"
+torchaudio = "*"
+torchvision = "*"
+pygame = "*"
+gymnasium = {extras = ["classic-control"], version = "*"}
 
 [dev-packages]
 
