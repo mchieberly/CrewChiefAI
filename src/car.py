@@ -20,7 +20,7 @@ class Car:
 
     def get_lap_time(self):
         x = (0.5 * (self.current_lap - self.last_lap_left_tires)) + (0.5 * (self.current_lap - self.last_lap_right_tires))
-        return 0.95 * x + 22.5
+        return 0.98 * (x ** 0.5) + 22.5
 
     def race_lap(self):
         self.current_time += self.get_lap_time()

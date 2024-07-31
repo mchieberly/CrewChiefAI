@@ -27,10 +27,19 @@ def race():
             print(f"The race is over on lap {lap}!")
             break
 
-        print(f"Lap {lap}: {car.get_lap_time()} seconds")
+        print(f"Lap {lap}: {format_time(car.get_lap_time())}")
         
-    print(f"Total time: {round(car.current_time, 2)} seconds")
+    print(f"Total time: {format_time(car.current_time)}")
 
+
+def format_time(seconds):
+    if seconds <= 60:
+        return f"{round(seconds, 2)} seconds"
+    minutes, seconds = divmod(seconds, 60)
+    if minutes <= 60:
+        return f"{int(minutes)} minutes and {round(seconds, 2)} seconds"
+    hours, minutes = divmod(minutes, 60)
+    return f"{int(hours)} hours, {int(minutes)} minutes, and {round(seconds, 2)} seconds"
 
 race()
 
