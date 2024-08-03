@@ -1,4 +1,4 @@
-import constants
+import src.constants as constants
 
 from torch import nn
 import copy
@@ -6,21 +6,21 @@ import copy
 """
 Class for Crew Chief online and target neural nets
 """
-class CCNet(nn.Module):
+class CrewChiefNet(nn.Module):
 
     def __init__(self, input_dim, output_dim):
         super().__init__()
 
-        if input_dim != constants.SMALL_LAYER_SIZE:
+        if input_dim != 6:
             raise ValueError(f"Expecting input of dimension 64, got: {input_dim}")
 
         # Define the online NN, using the proper inputs and the ReLU function
         self.online = nn.Sequential(
             nn.Linear(input_dim, constants.BIG_LAYER_SIZE),
             nn.ReLU(),
-            nn.Linear(constants.BIG_LAYER_SIZE, SMALL_LAYER_SIZE),
+            nn.Linear(constants.BIG_LAYER_SIZE, constants.SMALL_LAYER_SIZE),
             nn.ReLU(),
-            nn.Linear(SMALL_LAYER_SIZE, output_dim)
+            nn.Linear(constants.SMALL_LAYER_SIZE, output_dim)
         )
 
         # Create the target network as a copy of the online network

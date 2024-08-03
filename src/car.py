@@ -50,9 +50,7 @@ class Car:
         self.fuel_tank = 18
         self.last_lap_fueled = self.current_lap
         self.current_lap += 1
-        
-        self.check_for_race_fail()
-
+    
     def change_left_tires(self):
         if not self.is_caution:
             self.current_time += 35

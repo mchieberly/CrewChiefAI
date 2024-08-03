@@ -2,7 +2,7 @@ import torch
 import random, numpy as np
 from pathlib import Path
 
-from neural import CCNet
+from src.neural import CrewChiefNet
 from collections import deque
 
 """
@@ -34,7 +34,7 @@ class CrewChief:
         self.use_cuda = torch.cuda.is_available()
 
         # Initialize the neural networks
-        self.net = CCNet(self.state_dim, self.action_dim).float()
+        self.net = CrewChiefNet(self.state_dim, self.action_dim).float()
         if self.use_cuda:
             self.net = self.net.to(device='cuda')
         if checkpoint:
@@ -70,17 +70,18 @@ class CrewChief:
     """
     Save experience in the memory buffer
     """
-    def cache(self, state, next_state, action, reward, done):
+    def cache(self, state, next_state, action, reward, terminated, truncated):
 
         # Convert data to correct types
         state = torch.FloatTensor(state).cuda() if self.use_cuda else torch.FloatTensor(state)
         next_state = torch.FloatTensor(next_state).cuda() if self.use_cuda else torch.FloatTensor(next_state)
         action = torch.LongTensor([action]).cuda() if self.use_cuda else torch.LongTensor([action])
         reward = torch.DoubleTensor([reward]).cuda() if self.use_cuda else torch.DoubleTensor([reward])
-        done = torch.BoolTensor([done]).cuda() if self.use_cuda else torch.BoolTensor([done])
+        terminated = torch.BoolTensor([terminated]).cuda() if self.use_cuda else torch.BoolTensor([terminated])
+        truncated = torch.BoolTensor([truncated]).cuda() if self.use_cuda else torch.BoolTensor([truncated])
 
         # Add the data as a tuple to the memory buffer
-        self.memory.append( (state, next_state, action, reward, done,) )
+        self.memory.append( (state, next_state, action, reward, terminated, truncated) )
 
     """
     Access a batch of memory for learning
@@ -89,8 +90,8 @@ class CrewChief:
 
         # Randomly select the batch and return it in the correct format
         batch = random.sample(self.memory, self.batch_size)
-        state, next_state, action, reward, done = map(torch.stack, zip(*batch))
-        return state, next_state, action.squeeze(), reward.squeeze(), done.squeeze()
+        state, next_state, action, reward, terminated, truncated = map(torch.stack, zip(*batch))
+        return state, next_state, action.squeeze(), reward.squeeze(), terminated.squeeze(), truncated.squeeze()
 
 
     """
@@ -156,12 +157,13 @@ class CrewChief:
             return None, None
 
         # Recall from memory buffer
-        state, next_state, action, reward, done = self.recall()
+        state, next_state, action, reward, terminated, truncated = self.recall()
 
         # Estimate the current Q-value
         td_est = self.td_estimate(state, action)
 
         # Calculate the target
+        done = torch.logical_or(terminated, truncated)
         td_tgt = self.td_target(reward, next_state, done)
 
         # Calculate the loss and update the online network
@@ -174,7 +176,7 @@ class CrewChief:
     Save the model
     """
     def save(self):
-        save_path = self.save_dir / f"mario_net_{int(self.curr_step // self.save_every)}.chkpt"
+        save_path = self.save_dir / f"crew_chief_net_{int(self.curr_step // self.save_every)}.chkpt"
         torch.save(
             dict(
                 model=self.net.state_dict(),
@@ -182,7 +184,7 @@ class CrewChief:
             ),
             save_path
         )
-        print(f"CCNet saved to {save_path} at step {self.curr_step}")
+        print(f"CrewChiefNet saved to {save_path} at step {self.curr_step}")
 
 
     """
