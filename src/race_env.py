@@ -41,12 +41,14 @@ class RaceEnv(gymnasium.Env):
             self.state[3] = self.car.current_lap
 
         truncated = self.car.race_over()
-        terminated = self.car.race_failed()
+        terminated = False
+        if not truncated:
+            terminated = self.car.race_failed()            
         
         if terminated:
             reward = -1000  # Huge negative reward for failure
         else:
-            reward = -((lap_time - 23) / 5)  # Normalize lap time reward
+            reward = -((lap_time - 23) / 10)  # Normalize lap time reward
 
         return self.state, reward, terminated, truncated, {}
 
