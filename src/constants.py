@@ -1,0 +1,4 @@
+# Header here
+
+SMALL_LAYER_SIZE = 32
+BIG_LAYER_SIZE = 64
