@@ -18,6 +18,8 @@ def format_time(seconds):
     hours, minutes = divmod(minutes, 60)
     return f"{int(hours)} hours, {int(minutes)} minutes, and {round(seconds, 2)} seconds"
 
+# Time to beat: 3 hours, 12 minutes, and 5.95 seconds
+
 def main():
     # Initialize environment
     env = RaceEnv()
@@ -35,16 +37,13 @@ def main():
     logger = MetricLogger(save_dir)
 
     # Number of episodes
-    episodes = 50000
+    episodes = 100000
 
     for e in range(episodes):
 
         # Reset the state
         state = env.reset()
-        
-        # Race time list
-        race_time = []
-
+                
         while True:
             # Choose an action based on the state
             action = crew_chief.act(state)
@@ -66,8 +65,6 @@ def main():
 
             # Break if we ran out of fuel, lost tires, or the race is over
             if terminated or truncated:
-                if truncated:
-                    race_time.append(env.car.current_time)
                 break
 
         # Log the episode
@@ -79,8 +76,7 @@ def main():
                 epsilon=crew_chief.exploration_rate,
                 step=crew_chief.curr_step
             )
-            # Print the race time
-            print(f"Average race time: {format_time(sum(race_time) / len(race_time))}")
+            print(f"Episode: {e}, Current race time: {format_time(env.car.current_time)}")
 
 if __name__ == "__main__":
     main()
