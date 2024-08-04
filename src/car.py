@@ -80,4 +80,12 @@ class Car:
         self.last_lap_right_tires = self.current_lap
         self.current_lap += 1
 
-    
+    def get_race_time(self):
+        if self.current_time <= 60:
+            return f"{round(self.current_time, 2)} seconds"
+        minutes, seconds = divmod(self.current_time, 60)
+        if minutes <= 60:
+            return f"{int(minutes)} minutes and {round(seconds, 2)} seconds"
+        hours, minutes = divmod(minutes, 60)
+        return f"{int(hours)} hours, {int(minutes)} minutes, and {round(seconds, 2)} seconds"
+
