@@ -37,7 +37,7 @@ def main():
     logger = MetricLogger(save_dir)
 
     # Number of episodes
-    episodes = 100000
+    episodes = 40000
 
     for e in range(episodes):
 
